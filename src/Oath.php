@@ -129,6 +129,6 @@ class Oath {
 
         // Mask first bit due to signed / unsigned modulo operations
         // And extract HOTP value according to OTP_LENGTH
-        return ($p[1] & 0x7FFFFFFF) % (10 ** $this->length);
+        return ($p[1] & 0x7FFFFFFF) % pow(10, $this->length);
     }
 }
