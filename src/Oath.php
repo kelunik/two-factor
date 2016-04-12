@@ -107,6 +107,18 @@ class Oath {
 
     /** @see https://github.com/google/google-authenticator/wiki/Key-Uri-Format */
     public function getUri($issuer, $account, $key) {
+        if (!is_string($issuer)) {
+            throw new \InvalidArgumentException("Issuer must be string");
+        }
+
+        if (!is_string($account)) {
+            throw new \InvalidArgumentException("Account must be string");
+        }
+
+        if (!is_string($key)) {
+            throw new \InvalidArgumentException("Key must be string");
+        }
+
         return "otpauth://totp/" . urlencode($issuer) . ":" . urlencode($account) . "?" . http_build_query([
             "algorithm" => "SHA1",
             "secret" => Base32::encode($key),
