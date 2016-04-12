@@ -2,11 +2,13 @@
 
 namespace Kelunik\TwoFactor;
 
+use ParagonIE\ConstantTime\Base32;
+
 class Oath {
     private $length;
     private $windowSize;
 
-    public function __construct($length = 8, $windowSize = 30) {
+    public function __construct($length = 6, $windowSize = 30) {
         if (!is_int($length)) {
             throw new \InvalidArgumentException("Length must be int");
         }
@@ -101,6 +103,17 @@ class Oath {
         }
 
         return false;
+    }
+
+    /** @see https://github.com/google/google-authenticator/wiki/Key-Uri-Format */
+    public function getUri($issuer, $account, $key) {
+        return "otpauth://totp/" . urlencode($issuer) . ":" . urlencode($account) . "?" . http_build_query([
+            "algorithm" => "SHA1",
+            "secret" => Base32::encode($key),
+            "digits" => $this->length,
+            "period" => $this->windowSize,
+            "issuer" => $issuer,
+        ]);
     }
 
     private function getTimeWindow($time = null, $windowSize = 30) {
