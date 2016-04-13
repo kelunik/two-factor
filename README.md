@@ -32,7 +32,7 @@ $uri = $oath->getUri($key);
 
 You can use your favourite Javascript or PHP library to generate the QR code. For a working example, we're using [`qr.js`](http://neocotic.com/qr.js/).
 
-```js
+```html
 <form action="/2fa/setup" method="POST">
     Scan the following QR code and click continue once you're ready.
     You don't be able to see this QR code again.
