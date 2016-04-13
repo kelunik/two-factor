@@ -92,17 +92,17 @@ class Oath {
             throw new \InvalidArgumentException("Current time must be int");
         }
 
+        $valid = false;
+
         for ($i = 0; $i <= $grace; $i++) {
             $hotp = self::generateHotp($key, $this->getTimeWindow($currentTime));
+            $currentValid = hash_equals($hotp, $value);
 
-            if (hash_equals($hotp, $value)) {
-                return true;
-            }
-
+            $valid = $valid || $currentValid;
             $currentTime -= 30;
         }
 
-        return false;
+        return $valid;
     }
 
     /** @see https://github.com/google/google-authenticator/wiki/Key-Uri-Format */
