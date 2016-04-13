@@ -73,7 +73,7 @@ class Oath {
         return hash_equals($value, $this->generateHotp($key, $counter));
     }
 
-    public function verifyTotp($value, $key, $grace = 2, $currentTime = null) {
+    public function verifyTotp($value, $key, $graceWindows = 2, $currentTime = null) {
         if (!is_string($value)) {
             throw new \InvalidArgumentException("Value must be string");
         }
@@ -82,8 +82,8 @@ class Oath {
             throw new \InvalidArgumentException("Key must be string");
         }
 
-        if (!is_int($grace) || $grace < 0 || $grace > 5) {
-            throw new \InvalidArgumentException("Grace must be int and between 0 and 5");
+        if (!is_int($graceWindows) || $graceWindows < 0 || $graceWindows > 5) {
+            throw new \InvalidArgumentException("Grace windows must be int and between 0 and 5");
         }
 
         $currentTime = $currentTime ?: time();
@@ -94,12 +94,12 @@ class Oath {
 
         $valid = false;
 
-        for ($i = 0; $i <= $grace; $i++) {
+        for ($i = 0; $i <= $graceWindows; $i++) {
             $hotp = self::generateHotp($key, $this->getTimeWindow($currentTime));
             $currentValid = hash_equals($hotp, $value);
 
             $valid = $valid || $currentValid;
-            $currentTime -= 30;
+            $currentTime -= $this->windowSize;
         }
 
         return $valid;
