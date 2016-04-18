@@ -6,39 +6,45 @@
 
 `kelunik/two-factor` is a Google Authenticator compatible OATH implementation.
 
-**Required PHP Version**
+## Requirements
 
 - PHP 5.5+
 
-**Installation**
+## Installation
 
 ```bash
 composer require kelunik/two-factor
 ```
 
-**Demo**
+## Demo
 
 There's a [runnable demo](./examples/demo.php) contained in this repository.
 
-**Usage**
+## Usage
 
-**Generate a secret for the user**
+### Generate a secret per user
 
 ```php
 $oath = new Oath;
 $key = $oath->generateKey();
+// store key for user
+```
+
+### Let user setup two factor device
+
+```php
+$oath = new Oath;
+$key = "..."; // load user key from storage
 $uri = $oath->getUri($key);
 ```
 
-**Displaying a QR code to setup the 2FA device**
-
-You can use your favourite Javascript or PHP library to generate the QR code. For a working example, we're using [`qr.js`](http://neocotic.com/qr.js/).
+You can use your favourite JavaScript or PHP library to generate the QR code. For a working example, we're using [`qr.js`](http://neocotic.com/qr.js/).
 
 ```html
 <form action="/2fa/setup" method="POST">
     Scan the following QR code and click continue once you're ready.
-    You don't be able to see this QR code again.
     <input type="hidden" value="{{$uri}}" id="2fa-uri">
+
     <canvas id="qr-code"></canvas>
     <script src="/js/qr.min.js"></script>
     <script>
@@ -47,8 +53,19 @@ You can use your favourite Javascript or PHP library to generate the QR code. Fo
             value: document.getElementById("2fa-uri").value
         });
     </script>
-    <button type="submit">
-        Continue
-    </button>
+
+    <button type="submit">Continue</button>
 </form>
+```
+
+### Validate TOTP value
+
+```php
+$oath = new Oath;
+$key = "..."; // load user key from storage
+$isValid = $oath->verifyTotp($key, $totpValue);
+// If the token is valid, ensure that it can't be used again.
+// Because we use the default grace window size of two,
+// we have to store the used TOTP value for at least 90 seconds,
+// to prevent its usage explicitly.
 ```
