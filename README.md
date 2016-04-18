@@ -27,8 +27,6 @@ There's a [runnable demo](./examples/demo.php) contained in this repository.
 ```php
 $oath = new Oath;
 $key = $oath->generateKey();
-
-$encodedKey = base64_encode($key);
 $uri = $oath->getUri($key);
 ```
 
@@ -40,7 +38,6 @@ You can use your favourite Javascript or PHP library to generate the QR code. Fo
 <form action="/2fa/setup" method="POST">
     Scan the following QR code and click continue once you're ready.
     You don't be able to see this QR code again.
-    <input type="hidden" value="{{$encodedKey}}">
     <input type="hidden" value="{{$uri}}" id="2fa-uri">
     <canvas id="qr-code"></canvas>
     <script src="/js/qr.min.js"></script>
