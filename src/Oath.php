@@ -57,13 +57,13 @@ class Oath {
         return $this->generateHotp($key, $this->getTimeWindow($time ?: time()));
     }
 
-    public function verifyHotp($value, $key, $counter) {
-        if (!is_string($value)) {
-            throw new \InvalidArgumentException("Value must be string");
-        }
-
+    public function verifyHotp($key, $value, $counter) {
         if (!is_string($key)) {
             throw new \InvalidArgumentException("Key must be string");
+        }
+
+        if (!is_string($value)) {
+            throw new \InvalidArgumentException("Value must be string");
         }
 
         if (!is_int($counter)) {
@@ -73,13 +73,13 @@ class Oath {
         return hash_equals($value, $this->generateHotp($key, $counter));
     }
 
-    public function verifyTotp($value, $key, $graceWindows = 2, $currentTime = null) {
-        if (!is_string($value)) {
-            throw new \InvalidArgumentException("Value must be string");
-        }
-
+    public function verifyTotp($key, $value, $graceWindows = 2, $currentTime = null) {
         if (!is_string($key)) {
             throw new \InvalidArgumentException("Key must be string");
+        }
+
+        if (!is_string($value)) {
+            throw new \InvalidArgumentException("Value must be string");
         }
 
         if (!is_int($graceWindows) || $graceWindows < 0 || $graceWindows > 5) {
@@ -106,17 +106,17 @@ class Oath {
     }
 
     /** @see https://github.com/google/google-authenticator/wiki/Key-Uri-Format */
-    public function getUri($issuer, $account, $key) {
+    public function getUri($key, $issuer, $account) {
+        if (!is_string($key)) {
+            throw new \InvalidArgumentException("Key must be string");
+        }
+
         if (!is_string($issuer)) {
             throw new \InvalidArgumentException("Issuer must be string");
         }
 
         if (!is_string($account)) {
             throw new \InvalidArgumentException("Account must be string");
-        }
-
-        if (!is_string($key)) {
-            throw new \InvalidArgumentException("Key must be string");
         }
 
         return "otpauth://totp/" . urlencode($issuer) . ":" . urlencode($account) . "?" . http_build_query([
@@ -128,18 +128,14 @@ class Oath {
         ]);
     }
 
-    private function getTimeWindow($time = null, $windowSize = 30) {
-        if ($time !== null && !is_int($time)) {
+    private function getTimeWindow($time = null) {
+        $time = $time ?: time();
+
+        if (!is_int($time)) {
             throw new \InvalidArgumentException("Time must be int");
         }
 
-        if (!is_int($windowSize)) {
-            throw new \InvalidArgumentException("Window size must be int");
-        }
-
-        $time = $time ?: time();
-
-        return (int) floor($time / $windowSize);
+        return (int) floor($time / $this->windowSize);
     }
 
     /**

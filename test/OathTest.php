@@ -36,7 +36,7 @@ class OathTest extends \PHPUnit_Framework_TestCase {
      * @dataProvider provideRfcTestDataForValidation
      */
     public function testValidation($time, $totp, $result) {
-        $this->assertSame($result, $this->oath->verifyTotp($totp, self::KEY, 2, $time));
+        $this->assertSame($result, $this->oath->verifyTotp(self::KEY, $totp, 2, $time));
     }
 
     public function provideRfcTestDataForValidation() {
