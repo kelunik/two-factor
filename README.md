@@ -16,6 +16,10 @@
 composer require kelunik/two-factor
 ```
 
+**Demo**
+
+There's a [runnable demo](./examples/demo.php) contained in this repository.
+
 **Usage**
 
 **Generate a secret for the user**
