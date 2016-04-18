@@ -2,6 +2,8 @@
 
 namespace Kelunik\TwoFactor;
 
+use Doctrine\Instantiator\Exception\InvalidArgumentException;
+
 class OathTest extends \PHPUnit_Framework_TestCase {
     const KEY = "12345678901234567890";
 
@@ -46,6 +48,42 @@ class OathTest extends \PHPUnit_Framework_TestCase {
             [89, "94287082", true],
             [119, "94287082", true],
             [120, "94287082", false],
+        ];
+    }
+
+    /**
+     * @dataProvider provideKeyLengths
+     */
+    public function testGenerateKeyHasCorrectLength($length) {
+        $this->assertSame($length, strlen($this->oath->generateKey($length)));
+    }
+
+    public function provideKeyLengths() {
+        return [
+            [16],
+            [17],
+            [20],
+            [100],
+        ];
+    }
+
+    /**
+     * @dataProvider provideInvalidKeyLengths
+     * @expectedException InvalidArgumentException
+     */
+    public function testRejectsTooShortKeyLength($length) {
+        $this->oath->generateKey($length);
+    }
+
+    public function provideInvalidKeyLengths() {
+        return [
+            [-1],
+            [0],
+            [10],
+            [15],
+            ["16"],
+            ["16ab"],
+            [null],
         ];
     }
 }
