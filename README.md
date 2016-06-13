@@ -26,7 +26,10 @@ There's a [runnable demo](./examples/demo.php) contained in this repository.
 
 ```php
 $oath = new Oath;
+
+// this generates a key in binary format
 $key = $oath->generateKey();
+
 // store key for user
 ```
 
@@ -35,7 +38,12 @@ $key = $oath->generateKey();
 ```php
 $oath = new Oath;
 $key = "..."; // load user key from storage
+
+// Use the URI to provide an easy to scan QR code
 $uri = $oath->getUri($key);
+
+// Alternatively display the key for manual input
+$secret = $oath->encodeKey($key);
 ```
 
 You can use your favourite JavaScript or PHP library to generate the QR code. For a working example, we're using [`qr.js`](http://neocotic.com/qr.js/).

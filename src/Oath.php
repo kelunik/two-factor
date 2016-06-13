@@ -33,6 +33,14 @@ class Oath {
         return random_bytes($length);
     }
 
+    public function encodeKey($key) {
+        if (!is_string($key)) {
+            throw new \InvalidArgumentException("Key must be string");
+        }
+
+        return Base32::encode($key);
+    }
+
     public function generateHotp($key, $counter) {
         if (!is_string($key)) {
             throw new \InvalidArgumentException("Key must be string");
@@ -121,7 +129,7 @@ class Oath {
 
         return "otpauth://totp/" . urlencode($issuer) . ":" . urlencode($account) . "?" . http_build_query([
             "algorithm" => "SHA1",
-            "secret" => Base32::encode($key),
+            "secret" => $this->encodeKey($key),
             "digits" => $this->length,
             "period" => $this->windowSize,
             "issuer" => $issuer,
