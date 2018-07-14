@@ -15,7 +15,7 @@ cache:
     - $HOME/.composer/cache
 
 install:
-  - phpenv config-rm xdebug.ini
+  - phpenv config-rm xdebug.ini || echo "No xdebug config found."
   - composer install
 
 script:
