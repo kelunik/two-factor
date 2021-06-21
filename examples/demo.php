@@ -8,7 +8,7 @@ $oath = new Oath;
 $key = $oath->generateKey();
 
 $uri = $oath->getUri("Example", "me@example.com", $key);
-$uri = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . urlencode($uri);
+$uri = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . \urlencode($uri);
 
 print <<<HELP
     
@@ -28,6 +28,6 @@ print <<<HELP
 HELP;
 
 while (true) {
-    sleep(30 - time() % 30);
-    print "  [ " . date("H:i:s") . " ] " . $oath->generateTotp($key) . PHP_EOL;
+    \sleep(30 - \time() % 30);
+    print "  [ " . \date("H:i:s") . " ] " . $oath->generateTotp($key) . PHP_EOL;
 }

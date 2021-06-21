@@ -80,3 +80,8 @@ jobs:
         env:
           PHP_CS_FIXER_IGNORE_ENV: 1
         run: vendor/bin/phpunit ${{ matrix.phpunit-flags }}
+
+      - name: Run style fixer
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: 1
+        run: vendor/bin/php-cs-fixer --diff --dry-run -v fix

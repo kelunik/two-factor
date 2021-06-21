@@ -2,26 +2,28 @@
 
 namespace Kelunik\TwoFactor;
 
-use Doctrine\Instantiator\Exception\InvalidArgumentException;
-
-class OathTest extends \PHPUnit_Framework_TestCase {
+class OathTest extends \PHPUnit_Framework_TestCase
+{
     const KEY = "12345678901234567890";
 
     /** @var Oath */
     private $oath;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->oath = new Oath(8, 30);
     }
 
     /**
      * @dataProvider provideRfcTestDataForGeneration
      */
-    public function testGeneration($time, $totp) {
+    public function testGeneration($time, $totp)
+    {
         $this->assertSame($totp, $this->oath->generateTotp(self::KEY, $time));
     }
 
-    public function provideRfcTestDataForGeneration() {
+    public function provideRfcTestDataForGeneration()
+    {
         return [
             [59, "94287082"],
             [1111111109, "07081804"],
@@ -35,11 +37,13 @@ class OathTest extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider provideRfcTestDataForValidation
      */
-    public function testValidation($time, $totp, $result) {
+    public function testValidation($time, $totp, $result)
+    {
         $this->assertSame($result, $this->oath->verifyTotp(self::KEY, $totp, 2, $time));
     }
 
-    public function provideRfcTestDataForValidation() {
+    public function provideRfcTestDataForValidation()
+    {
         return [
             [0, "94287082", false],
             [30, "94287082", true],
@@ -54,11 +58,13 @@ class OathTest extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider provideKeyLengths
      */
-    public function testGenerateKeyHasCorrectLength($length) {
-        $this->assertSame($length, strlen($this->oath->generateKey($length)));
+    public function testGenerateKeyHasCorrectLength($length)
+    {
+        $this->assertSame($length, \strlen($this->oath->generateKey($length)));
     }
 
-    public function provideKeyLengths() {
+    public function provideKeyLengths()
+    {
         return [
             [16],
             [17],
@@ -69,13 +75,15 @@ class OathTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @dataProvider provideInvalidKeyLengths
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
-    public function testRejectsTooShortKeyLength($length) {
+    public function testRejectsTooShortKeyLength($length)
+    {
         $this->oath->generateKey($length);
     }
 
-    public function provideInvalidKeyLengths() {
+    public function provideInvalidKeyLengths()
+    {
         return [
             [-1],
             [0],
