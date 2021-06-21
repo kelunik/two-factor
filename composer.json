@@ -17,8 +17,8 @@
         }
     ],
     "require": {
-        "php": "^5.5|^7|^8",
-        "paragonie/random_compat": ">= 2",
+        "php": ">=5.5",
+        "paragonie/random_compat": ">=2",
         "paragonie/constant_time_encoding": "^1|^2",
         "symfony/polyfill-php56": "^1.1"
     },
