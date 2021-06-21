@@ -17,18 +17,21 @@
         }
     ],
     "require": {
-        "php": ">=5.5",
-        "paragonie/random_compat": ">=2",
-        "paragonie/constant_time_encoding": "^1|^2",
-        "symfony/polyfill-php56": "^1.1"
+        "php": ">=7.1",
+        "paragonie/constant_time_encoding": "^1|^2"
     },
     "require-dev": {
         "amphp/php-cs-fixer-config": "dev-master",
-        "phpunit/phpunit": "^4.8|^5.3"
+        "phpunit/phpunit": "^7 | ^8 | ^9"
     },
     "autoload": {
         "psr-4": {
             "Kelunik\\TwoFactor\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kelunik\\TwoFactor\\": "test"
         }
     }
 }

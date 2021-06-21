@@ -2,14 +2,16 @@
 
 namespace Kelunik\TwoFactor;
 
-class OathTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class OathTest extends TestCase
 {
-    const KEY = "12345678901234567890";
+    private const KEY = "12345678901234567890";
 
     /** @var Oath */
     private $oath;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->oath = new Oath(8, 30);
     }
@@ -17,12 +19,12 @@ class OathTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideRfcTestDataForGeneration
      */
-    public function testGeneration($time, $totp)
+    public function testGeneration($time, $totp): void
     {
         $this->assertSame($totp, $this->oath->generateTotp(self::KEY, $time));
     }
 
-    public function provideRfcTestDataForGeneration()
+    public function provideRfcTestDataForGeneration(): array
     {
         return [
             [59, "94287082"],
@@ -37,12 +39,12 @@ class OathTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideRfcTestDataForValidation
      */
-    public function testValidation($time, $totp, $result)
+    public function testValidation($time, $totp, $result): void
     {
         $this->assertSame($result, $this->oath->verifyTotp(self::KEY, $totp, 2, $time));
     }
 
-    public function provideRfcTestDataForValidation()
+    public function provideRfcTestDataForValidation(): array
     {
         return [
             [0, "94287082", false],
@@ -58,12 +60,12 @@ class OathTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideKeyLengths
      */
-    public function testGenerateKeyHasCorrectLength($length)
+    public function testGenerateKeyHasCorrectLength($length): void
     {
         $this->assertSame($length, \strlen($this->oath->generateKey($length)));
     }
 
-    public function provideKeyLengths()
+    public function provideKeyLengths(): array
     {
         return [
             [16],
@@ -75,14 +77,15 @@ class OathTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideInvalidKeyLengths
-     * @expectedException \InvalidArgumentException
      */
-    public function testRejectsTooShortKeyLength($length)
+    public function testRejectsTooShortKeyLength($length): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->oath->generateKey($length);
     }
 
-    public function provideInvalidKeyLengths()
+    public function provideInvalidKeyLengths(): array
     {
         return [
             [-1],

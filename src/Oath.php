@@ -4,21 +4,14 @@ namespace Kelunik\TwoFactor;
 
 use ParagonIE\ConstantTime\Base32;
 
+/** @final */
 class Oath
 {
     private $length;
     private $windowSize;
 
-    public function __construct($length = 6, $windowSize = 30)
+    public function __construct(int $length = 6, int $windowSize = 30)
     {
-        if (!\is_int($length)) {
-            throw new \InvalidArgumentException("Length must be int");
-        }
-
-        if (!\is_int($windowSize)) {
-            throw new \InvalidArgumentException("Window size must be int");
-        }
-
         $this->length = $length;
         $this->windowSize = $windowSize;
     }
@@ -111,7 +104,7 @@ class Oath
         $valid = false;
 
         for ($i = 0; $i <= $graceWindows; $i++) {
-            $hotp = self::generateHotp($key, $this->getTimeWindow($currentTime));
+            $hotp = $this->generateHotp($key, $this->getTimeWindow($currentTime));
             $currentValid = \hash_equals($hotp, $value);
 
             $valid = $valid || $currentValid;
@@ -145,13 +138,9 @@ class Oath
         ]);
     }
 
-    private function getTimeWindow($time = null)
+    private function getTimeWindow(int $time = null): int
     {
         $time = $time ?: \time();
-
-        if (!\is_int($time)) {
-            throw new \InvalidArgumentException("Time must be int");
-        }
 
         return (int) \floor($time / $this->windowSize);
     }
@@ -159,7 +148,7 @@ class Oath
     /**
      * @see https://tools.ietf.org/html/rfc4226#section-5.3
      */
-    private function oathTruncate($rawHmac)
+    private function oathTruncate($rawHmac): int
     {
         // Take lower 4 bit as offset
         $offset = \ord($rawHmac[19]) & 0x0F;
@@ -169,6 +158,6 @@ class Oath
 
         // Mask first bit due to signed / unsigned modulo operations
         // And extract HOTP value according to OTP_LENGTH
-        return ($p[1] & 0x7FFFFFFF) % \pow(10, $this->length);
+        return ($p[1] & 0x7FFFFFFF) % (10 ** $this->length);
     }
 }
